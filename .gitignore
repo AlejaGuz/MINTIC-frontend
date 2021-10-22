@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 .DS_Store
 node_modules
 /dist
@@ -22,7 +22,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-=======
 # These are some examples of commonly ignored file patterns.
 # You should customize this list as applicable to your project.
 # Learn more about .gitignore:
@@ -73,4 +72,3 @@ Thumbs.db
 *.mov
 *.wmv
 
->>>>>>> 8c401fed15ea94002285f2a889927535353b5ed1
