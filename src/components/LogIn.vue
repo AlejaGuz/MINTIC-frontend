@@ -3,9 +3,9 @@
     <div class="container_logIn_user">
       <h2>Iniciar sesión</h2>
       <form v-on:submit.prevent="processLogInUser" >
-        <input type="text" v-model="usuario.username" placeholder="Username">
+        <input type="text" v-model="user.username" placeholder="Username">
         <br>
-        <input type="password" v-model="usuario.password" placeholder="Password">
+        <input type="password" v-model="user.password" placeholder="Password">
         <br>
         <button type="submit">Iniciar Sesion</button>
       </form>
@@ -14,16 +14,18 @@
 </template>
 
 <script>
+import jwt_decode from "jwt-decode";
 import axios from 'axios';
 
 export default {
   name: "LogIn",
-  
+  tipo: 0,
+
   data: function(){
     return {
-      usuario: {
+      user: {
         username:"",
-        password:""
+        password:"",
       }
     }
   },
@@ -31,20 +33,24 @@ export default {
   methods: {
     processLogInUser: function(){
       
+      alert("entró a process ")
       axios.post(
         "https://sportclub-be.herokuapp.com/login/",
         this.user,
         {headers: {}}
         )
-        alert("result: "+ result)
+        
         .then((result) => {
-          
+          alert("crear datos");
           let dataLogIn = {
+            
             username: this.user.username,
             token_access: result.data.access,
             token_refresh: result.data.refresh,
+            tipo: this.tipo,
           }
-          this.$emit('completedLogIn', dataLogIn)
+          //this.$emit('completedLogIn', dataLogIn);
+          this.cargarUsuario(dataLogIn);
         })
         .catch((error) => {
           if (error.response.status == "401")
@@ -52,7 +58,29 @@ export default {
           else
             alert("ERROR: "+ error);
         });
-    }
+    },
+    cargarUsuario: function(dataL){
+      alert("entró a cargar usuario");
+            let token = dataL.token_access;
+            alert("token: "+ token);
+            let userId = jwt_decode(token).user_id.toString();
+            alert("UserID: "+ userId);
+
+            axios.get(`https://sportclub-be.herokuapp.com/user/${userId}/`, 
+            {headers: {'Authorization': `Bearer ${token}`}})
+
+                .then((result) => {            
+                    alert("tipo: "+ result.data.tipo);
+                    dataL.tipo = result.data.tipo;
+                    this.$emit('completedLogIn', dataL);
+                })
+                .catch(() => {
+                  alert("error en cargar usuario: ");
+                    this.$emit('logOut');
+                });
+
+                return this.tipo;
+    },
   }
 }
 </script>

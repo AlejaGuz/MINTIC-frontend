@@ -5,7 +5,7 @@
       <nav>
         <button v-if="is_auth" v-on:click="loadHome" > Inicio </button>
         <button v-if="is_auth" v-on:click="loadAccount" > Cuenta </button>
-        <button v-if="!is_auth" v-on:click="logOut" > Cerrar Sesión </button>
+        <button v-if="is_auth" v-on:click="logOut" > Cerrar Sesión </button>
         <button v-if="!is_auth" v-on:click="loadLogIn" > Iniciar Sesión </button>
         <button v-if="!is_auth" v-on:click="loadSignUp" > Registrarse </button>
       </nav>
@@ -44,8 +44,14 @@ export default {
       if (this.is_auth == false)
         this.$router.push({ name: "logIn" });
       else
-        this.$router.push({ name: "home" });
-  },
+        if(localStorage.getItem("tipo")== 0){
+           this.$router.push({ name: "home" });
+        }else{
+          //this.$router.push({ name: "centro" });
+          this.$router.push({ name: "actividad" });
+        }
+    },
+
 
   loadLogIn: function(){
     this.$router.push({name: "logIn"})
@@ -61,6 +67,7 @@ export default {
       localStorage.setItem("username", data.username);
       localStorage.setItem("token_access", data.token_access);
       localStorage.setItem("token_refresh", data.token_refresh);
+      localStorage.setItem("tipo", data.tipo);
       alert("Autenticación Exitosa");
       this.verifyAuth();
     },
@@ -68,20 +75,20 @@ export default {
       alert("Registro Exitoso");
       this.completedLogIn(data);
     },
-  },
 
-  loadHome: function() {
-    this.$router.push({ name: "home" });
-  },
+    logOut: function () {
+      localStorage.clear();
+      alert("Sesión Cerrada");
+      this.verifyAuth();
+    },
+    loadHome: function() {
+      this.$router.push({ name: "home" });
+    },
 
-  logOut: function () {
-    localStorage.clear();
-    alert("Sesión Cerrada");
-    this.verifyAuth();
-  },
+    loadAccount: function () {
+      this.$router.push({ name: "account" });
+    },
 
-  loadAccount: function () {
-    this.$router.push({ name: "account" });
   },
 
   created: function(){

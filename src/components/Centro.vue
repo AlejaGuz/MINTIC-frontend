@@ -1,26 +1,27 @@
 <template>
     <div v-if="loaded" class="information">
-        <h1>Información de su cuenta</h1>
-        <h2>Nombre: <span>{{name}}</span></h2>
-        <h2>Saldo: <span>{{balance}} COP </span></h2>
-        <h2>Correo electrónico: <span>{{email}}</span></h2>
+        <h1>Información Centro Deprtivo</h1>
+        <h2>Nombre: <span>{{username}}</span></h2>
+        <h2>Tipo: <span>{{tipo}}</span></h2>
+        <h2>Correo electrónico: <span>{{email}}</span></h2> 
     </div>
 </template>
 <script>
 import jwt_decode from "jwt-decode";
 import axios from 'axios';
 export default {
-    name: "Account",
+    
     data: function(){
         return {
-        name: "",
-        email: "",
-        balance: 0,
-        loaded: false,
+            username: "",
+            email: "",
+            tipo: 0,
+            loaded: true,
         }
     },
     methods: {
         getData: async function () {
+            
             if (localStorage.getItem("token_access") === null || localStorage.getItem("token_refresh") === null) {
                 this.$emit('logOut');
                 return;
@@ -30,35 +31,38 @@ export default {
             let token = localStorage.getItem("token_access");
             let userId = jwt_decode(token).user_id.toString();
 
-            axios.get(`https://mision-tic-bank-be.herokuapp.com/user/${userId}/`, 
+            
+
+            axios.get(`https://sportclub-be.herokuapp.com/user/${userId}/`, 
             {headers: {'Authorization': `Bearer ${token}`}})
 
-                .then((result) => {
-                this.name = result.data.name;
-                this.email = result.data.email;
-                this.balance = result.data.account.balance;
-                this.loaded = true;
+
+                .then((result) => {            
+                    this.username = result.data.username;
+                    this.email = result.data.email;
+                    this.tipo = result.data.tipo;
+                    alert("tipo en account: "+ this.username);
                 })
                 .catch(() => {
-                this.$emit('logOut');
+                    this.$emit('logOut');
                 });
         },
 
         verifyToken: function () {
 
-            return axios.post("https://mision-tic-bank-be.herokuapp.com/refresh/", 
+            return axios.post("https://sportclub-be.herokuapp.com/refresh/", 
             {refresh: localStorage.getItem("token_refresh")}, {headers: {}})
         
             .then((result) => {
-            localStorage.setItem("token_access", result.data.access);
+                localStorage.setItem("token_access", result.data.access);
             })
             .catch(() => {
-            this.$emit('logOut');
+                this.$emit('logOut');
             });
         }
     },
     created: async function(){
-    this.getData();
+        this.getData();
     },
 }
 </script>

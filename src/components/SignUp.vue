@@ -3,14 +3,16 @@
     <div class="container_signUp_user">
       <h2>Registrarse</h2>
       <form v-on:submit.prevent="processSignUp" >
-        <input type="text" v-model="usuario.username" placeholder="Username">
+        <input type="text" v-model="user.username" placeholder="Username">
         <br>
 
-        <input type="password" v-model="usuario.password" placeholder="Password">
+        <input type="password" v-model="user.password" placeholder="Password">
         <br>
 
-        <input type="email" v-model="usuario.email" placeholder="Email">
+        <input type="email" v-model="user.email" placeholder="Email">
         <br>
+
+        <input id="checkCentro" type="checkbox"  placeholder="Centro Deportivo">
         
         <button type="submit">Registrarse</button>
       </form>
@@ -26,7 +28,8 @@ export default {
 
   data: function(){
     return {
-      usuario: {
+
+      user: {
         username: "",
         password: "",
         email: "",
@@ -35,6 +38,10 @@ export default {
   },
   methods: {
       processSignUp: function(){
+        let t = 0;
+        if(document.getElementById("checkCentro").checked){
+          t = 1;
+        }
         axios.post(
           "https://sportclub-be.herokuapp.com/user/",
           this.user,
@@ -45,6 +52,7 @@ export default {
               username: this.user.username,
               token_access: result.data.access,
               token_refresh: result.data.refresh,
+              tipo: t,
             }
             this.$emit('completedSignUp', dataSignUp)
         })

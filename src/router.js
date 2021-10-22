@@ -3,7 +3,8 @@ import App from './App.vue';
 import LogIn from './components/LogIn.vue'
 import SignUp from './components/SignUp.vue'
 import Home from './components/Home.vue'
-import Account from './components/Account.vue'
+import Centro from './components/Centro.vue'
+import Actividad from './components/Actividad.vue'
 
 const routes = [{
     path: '/',
@@ -24,12 +25,17 @@ const routes = [{
     path: '/user/home',
     name: "home",
     component: Home
-    },
-    {
-      path: '/user/account',
-      name: "account",
-      component: Account
-      }
+  },
+  {
+    path: '/user/centro',
+    name: "centro",
+    component: Centro
+  },
+  {
+    path: '/user/actividad',
+    name: "actividad",
+    component: Actividad
+  },
 ];
 const router = createRouter({
   history: createWebHistory(),
