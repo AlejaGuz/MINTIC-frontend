@@ -5,6 +5,8 @@ import SignUp from './components/SignUp.vue'
 import Home from './components/Home.vue'
 import Centro from './components/Centro.vue'
 import Actividad from './components/Actividad.vue'
+import CreateActividad from './components/CreateActividad.vue'
+import UpdateActividad from './components/UpdateActividad.vue'
 
 const routes = [{
     path: '/',
@@ -35,6 +37,16 @@ const routes = [{
     path: '/user/actividad',
     name: "actividad",
     component: Actividad
+  },
+  {
+    path: '/user/createactividad',
+    name: "createactividad",
+    component: CreateActividad
+  },
+  {
+    path: '/user/updateactividad',
+    name: "updateactividad",
+    component: UpdateActividad
   },
 ];
 const router = createRouter({

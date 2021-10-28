@@ -43,7 +43,7 @@ export default {
           t = 1;
         }
         axios.post(
-          "https://sportclub-be.herokuapp.com/user/",
+          "http://127.0.0.1:8000/user/",
           this.user,
           {headers: {}}
         )

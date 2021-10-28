@@ -33,15 +33,15 @@ export default {
   methods: {
     processLogInUser: function(){
       
-      alert("entró a process ")
+      //alert("entró a process ")
       axios.post(
-        "https://sportclub-be.herokuapp.com/login/",
+        "http://127.0.0.1:8000/login/",
         this.user,
         {headers: {}}
         )
         
         .then((result) => {
-          alert("crear datos");
+          //alert("crear datos");
           let dataLogIn = {
             
             username: this.user.username,
@@ -62,11 +62,11 @@ export default {
     cargarUsuario: function(dataL){
       alert("entró a cargar usuario");
             let token = dataL.token_access;
-            alert("token: "+ token);
+            //alert("token: "+ token);
             let userId = jwt_decode(token).user_id.toString();
-            alert("UserID: "+ userId);
+            //alert("UserID: "+ userId);
 
-            axios.get(`https://sportclub-be.herokuapp.com/user/${userId}/`, 
+            axios.get(`http://127.0.0.1:8000/user/${userId}/`, 
             {headers: {'Authorization': `Bearer ${token}`}})
 
                 .then((result) => {            

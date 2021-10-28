@@ -4,7 +4,6 @@
       <h1>Sport Club</h1>
       <nav>
         <button v-if="is_auth" v-on:click="loadHome" > Inicio </button>
-        <button v-if="is_auth" v-on:click="loadAccount" > Cuenta </button>
         <button v-if="is_auth" v-on:click="logOut" > Cerrar Sesión </button>
         <button v-if="!is_auth" v-on:click="loadLogIn" > Iniciar Sesión </button>
         <button v-if="!is_auth" v-on:click="loadSignUp" > Registrarse </button>
@@ -62,7 +61,7 @@ export default {
   },
 
     completedLogIn: function(data) {
-      alert("entró a complited Login");
+      //alert("entró a complited Login");
       localStorage.setItem("isAuth", true);
       localStorage.setItem("username", data.username);
       localStorage.setItem("token_access", data.token_access);
@@ -82,7 +81,12 @@ export default {
       this.verifyAuth();
     },
     loadHome: function() {
-      this.$router.push({ name: "home" });
+      if(localStorage.getItem("tipo")== 0){
+          this.$router.push({ name: "home" });
+      }else{
+          //this.$router.push({ name: "centro" });
+          this.$router.push({ name: "actividad" });
+      }
     },
 
     loadAccount: function () {

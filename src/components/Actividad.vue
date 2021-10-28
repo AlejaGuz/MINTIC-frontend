@@ -2,12 +2,17 @@
     <div v-if="loaded" class="information">
         <ul>
            <li v-for="act in actividades">
-               {{ act.nomAct }}
-               {{ act.capacidad }}
-               {{ act.horario }}
-               </li> 
-               <li>Prueba</li>
+               {{ act.actividad.nombre }}
+               {{ act.actividad.capacidad }}
+               {{ act.horario.dia }} - {{ act.horario.hora }}
+                &nbsp;
+               <button v-bind:key = act.id_clase v-on:click="eliminarAct(act.id_clase)">Eliminar</button>
+                &nbsp;
+               <button v-bind:key = act.id_clase v-on:click="actualizarAct(act.id_clase)">Cambiar Horario</button>
+            </li> 
+               
         </ul>
+        <button v-on:click="crearAct">Agregar Actividad</button>
     </div>
 </template>
 <script>
@@ -27,16 +32,19 @@ export default {
 
     methods: {
         getActividades : function(){
-            alert("entró a getActividdes");
+            //alert("entró a getActividdes");
 
-            axios.get("https://sportclub-be.herokuapp.com/fusionreadall/",{headers:{}})
+            //axios.get("https://sportclub-be.herokuapp.com/fusionreadall/",{headers:{}})
+            axios.get("http://127.0.0.1:8000/fusionreadall/",{headers:{}})
 
             .then((result) => {
-                alert("entró a result axios fusion read all");
-                let array = result.data
-                for(let a of array){
+                //alert("entró a result axios fusion read all");
+                this.actividades = result.data
+                console.log(this.actividades)
+                //alert("tamaño arreglo: "+ this.actividades.length);
+               /* for(let a of array){
                     this.getInfoActividad(a.actividad,a.horario);
-                }
+                }*/
                 
             })
             .catch(() => {
@@ -58,7 +66,7 @@ export default {
 
             alert("id_actividad: "+ act + " userId: "+ userId);
 
-            axios.get("https://sportclub-be.herokuapp.com/actividadread/"+act+"/", 
+            axios.get("http://127.0.0.1:8000/actividadread/"+act+"/", 
             {headers: {'Authorization': `Bearer ${token}`},data:{'id_user':userId}})
 
             .then((result)=>{
@@ -70,7 +78,7 @@ export default {
                 alert("Error en getInfo Act");
             });
 
-            axios.get(`https://sportclub-be.herokuapp.com/horariodetail/${hor}/`, 
+            axios.get(`http://127.0.0.1:8000/horariodetail/${hor}/`, 
             {headers: {'Authorization': `Bearer ${token}`}, data:{'id_user':userId}})
 
             .then((result)=>{
@@ -84,10 +92,40 @@ export default {
             alert("insertar info Act");
             this.actividades.push(infoAct);
             alert("tamaño arreglo: "+ this.actividades.length);
+        },
+        eliminarAct : function (btn){
+            alert("entró a eliminar, value: "+ btn);
+           
+           let token = localStorage.getItem("token_access");
+           let userId = jwt_decode(token).user_id.toString();
+
+           axios.delete(`http://127.0.0.1:8000/fusiondelete/${btn}/`, {
+           data: {id_user :userId},
+           headers: {'Authorization': `Bearer ${token}`}
+           }
+           )
+
+           .then((result)=>{
+               alert(result);
+           })
+           .catch((error) => {
+                console.log(error)
+                alert("ERROR: Fallo en el registro. "+ error );
+            });
+            
+        },
+        actualizarAct : function (btn){
+            //this.$emit('actualizarActividad', btn);
+            localStorage.setItem("idActUpdate", btn);
+            this.$router.push({ name: "updateactividad" });
+            //bus.$emit('actualizarActividad',btn);
+        },
+        crearAct: function(){
+            this.$router.push({ name: "createactividad" });
         }
     },
     created: function(){
-        alert("entró a created");
+        //alert("entró a created");
         this.getActividades();
     },
 }
